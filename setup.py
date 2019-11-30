@@ -16,9 +16,6 @@ REQUIRED = [
     "httpx", "starlette", "aiofiles", "jinja2", "python-multipart", "fake_useragent", "uvicorn", "click",
 ]
 
-if platform.system() == "Linux":
-    os.system("pkg install build-essential")
-
 setup(
     name=NAME,
     version=VERSION,
