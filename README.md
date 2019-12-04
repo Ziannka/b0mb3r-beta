@@ -39,13 +39,7 @@ b0mb3r имеет API, которое позволит вам выполнять
 | number_of_cycles   | Количество повторений                                   |
 
 **Пример ответа**
-```json
-{
-    "success": false, 
-    "error_code": "400", 
-    "error_description": "The minimum value for number_of_cycles is 1."
-}
-```
+<img alt="Made with Python" src="https://user-images.githubusercontent.com/42045258/70137798-da854680-169f-11ea-8133-2f37631292af.png"></img>
 
 ## 📝 Лицензия
 <!--- Не надо это удалять, пожалуйста 😐  -->
