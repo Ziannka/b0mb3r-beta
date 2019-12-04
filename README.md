@@ -39,7 +39,7 @@ b0mb3r имеет API, которое позволит вам выполнять
 | number_of_cycles   | Количество повторений                                   |
 
 **Пример ответа**
-<img alt="Made with Python" src="https://user-images.githubusercontent.com/42045258/70137798-da854680-169f-11ea-8133-2f37631292af.png"></img>
+<img alt="Made with Python" src="https://user-images.githubusercontent.com/42045258/70137899-1d471e80-16a0-11ea-8f59-5d74e84b5139.png"></img>
 
 ## 📝 Лицензия
 <!--- Не надо это удалять, пожалуйста 😐  -->
