@@ -18,7 +18,7 @@
 
 2. Введите следующую команду:
 ```sh
-pip install https://github.com/crinny/b0mb3r-beta/archive/master.zip --upgrade
+pip3 install https://github.com/crinny/b0mb3r-beta/archive/master.zip --upgrade
 ```
 
 ## Запуск
