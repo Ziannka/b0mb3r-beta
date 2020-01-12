@@ -13,7 +13,9 @@ REQUIRES_PYTHON = '>=3.6.0'
 VERSION = '2.0.0'
 
 REQUIRED = [
-    "httpx", "starlette", "aiofiles", "jinja2", "python-multipart", "fake_useragent", "uvicorn", "click",
+    "starlette", "aiofiles", "jinja2", "python-multipart", "fake_useragent",
+    "uvicorn", "click",
+    "aiohttp"
 ]
 
 setup(
@@ -33,7 +35,7 @@ setup(
     },
     install_requires=REQUIRED,
     extras_require={},
-    package_data = {
+    package_data={
         'b0mb3r': ['static/*', 'templates/*', 'services/*']
     },
     license='Mozilla Public License 2.0',

