@@ -3,13 +3,14 @@
 import inspect
 import os
 import sys
+
+import asyncio
+import aiohttp.client_exceptions
 import click
-import traceback
 import webbrowser
 import pkgutil
 import pkg_resources
 import uvicorn
-from httpx.exceptions import HTTPError
 from starlette.applications import Starlette
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
@@ -28,7 +29,9 @@ app.mount('/static', StaticFiles(directory="static"), name='static')
 def main():
     webbrowser.open('http://127.0.0.1:8080/', new=2, autoraise=True)
     print(
-        "Интерфейс был запущен по этой ссылке: http://127.0.0.1:8080/. Если она не открылась автоматически - скопируйте и вставьте её в браузер.")
+        "Интерфейс был запущен по этой ссылке: http://127.0.0.1:8080/."
+        " Если она не открылась автоматически - скопируйте и вставьте"
+        " её в браузер.")
     uvicorn.run(app, host='127.0.0.1', port=8080)
 
 
@@ -49,42 +52,51 @@ def load_services():
 
 @app.route('/', methods=['GET'])
 async def server_index(request):
-    return templates.TemplateResponse('index.html', {'request': request, 'services_count': len(load_services())})
+    return templates.TemplateResponse('index.html', {'request': request,
+                                                     'services_count': len(
+                                                         load_services())})
+
+
+async def attack(number_of_cycles: int, phone_code: str, phone):
+    for _ in range(number_of_cycles):
+        for module, service in load_services().items():
+            try:
+                service_obj = getattr(module, service)(phone, phone_code)
+                await service_obj.run()
+            except aiohttp.client_exceptions.ClientConnectorError:
+                continue
 
 
 @app.route('/attack/start', methods=['POST'])
 async def server_start_attack(request):
-    try:
-        data = await request.form()
-        phone = data['phone'].replace("-", "").replace(" ", "")
-
-        number_of_cycles = int(data['number_of_cycles'])
-        if int(number_of_cycles) < 1:
-            return JSONResponse(
-                {'success': False, 'error_code': 400,
-                 'error_description': 'The minimum value for number_of_cycles is 1.'})
-
+    form_data = await request.form()
+    loop = asyncio.get_running_loop()
+    if not form_data:
+        data = await request.json()
+        phone = data["phone"]
+        number_of_cycles = int(data["number_of_cycles"])
         phone_code = data['phone_code']
-        if phone_code not in country_codes.keys():
-            return JSONResponse(
-                {'success': False, 'error_code': 400, 'error_description': 'This phone_code is not supported.'},
-                status_code=400)
+    else:
+        phone = form_data['phone'].replace("-", "").replace(" ", "")
+        phone_code = form_data['phone_code']
+        number_of_cycles = int(form_data['number_of_cycles'])
 
-        for _ in range(number_of_cycles):
-            for module, service in load_services().items():
-                try:
-                    await getattr(module, service)(phone, phone_code).run()
-                except HTTPError:
-                    pass
+    if number_of_cycles < 1:
+        return JSONResponse(
+            {'success': False, 'error_code': 400,
+             'error_description':
+                 'The minimum value for number_of_cycles is 1.'})
 
-        return JSONResponse({'success': True})
-    except (ValueError, KeyError):
-        return JSONResponse({'success': False, 'error_code': 400, 'error_description': 'Missing or invalid values.'},
-                            status_code=400)
-    except Exception as error:
-        formatted_error = f"{type(error).__name__}: {error}"
-        return JSONResponse({'success': False, 'error_code': 500, 'error_description': formatted_error,
-                             "traceback": traceback.format_exc()}, status_code=500)
+    if phone_code not in country_codes.keys():
+        return JSONResponse(
+            {'success': False, 'error_code': 400,
+             'error_description': 'This phone_code is not supported.'},
+            status_code=400)
+
+    loop.create_task(attack(phone_code=phone_code, phone=phone,
+                            number_of_cycles=number_of_cycles))
+
+    return JSONResponse({'success': True})
 
 
 if __name__ == '__main__':
