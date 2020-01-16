@@ -5,7 +5,7 @@ import platform
 import os
 
 NAME = 'b0mb3r'
-DESCRIPTION = 'Открытый и бесплатный СМС бомбер'
+DESCRIPTION = 'СМС бомбер'
 URL = 'https://github.com/crinny/b0mb3r'
 EMAIL = ''
 AUTHOR = 'crinny'
